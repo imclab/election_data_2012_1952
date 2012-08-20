@@ -34,9 +34,18 @@ void parseData(){
       
   // first let's make a single column and use it as a reference
   // we start at 1 because cell '0' is blank
+  int[] years = int(allData[0].split(","));
+  String[] names = allData[1].split(",");
+  // the first column we have is Obama, 2008. It is in the second column from the left,
+  // or position 1 in the array
+  int elecYear = years[1];
+  String candidate = names[1];
+  println(elecYear + ": " + candidate);
+  
+  
   for(int i=1; i<allData[0].length(); i++){
-   int[] years = int(allData[0].split(","));
-   println(years);
+   
+   
   }
   
 
