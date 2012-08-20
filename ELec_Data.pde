@@ -43,13 +43,6 @@ void parseData() {
   String candidate = names[1];
   Election firstElection = new Election(electionYear);
 
-  // as we continue down the rows, every new line is a category
-  // every value below the name should be kept, along with that category's name
-  for (int i=2; i<allData.length; i++) {
-    String[] thisRow = allData[i].split(",");
-    String categoryTitle = thisRow[0];
-    int categoryValue = int(thisRow[1]);
-  }
 }
 
 
