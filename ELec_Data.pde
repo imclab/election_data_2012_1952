@@ -3,6 +3,12 @@
    A series of tutorials for importing table data 
    and making basic interactive visuals
    
+   Focus is comparing voter figures for all candidates of one election
+   User chooses topic
+   The values for that election appear in a ring
+   The values for the topic over time appear below as a graph with a marker for current year
+   User can slide along the graph to change which year is shown above as a ring.
+   
    Matthew Epler 2012
    for School of Data
 */
@@ -12,5 +18,28 @@ String[] allData;
 
 void setup(){
   allData = loadStrings(filename);
-  println(allData);
+  //println(allData);
+  
+  parseData();
+}
+
+void parseData(){
+  // the first String is all years
+  // for each cell in this line, check to see if an existing election exists
+  // if no, create a new election, add the candidate and values below that cell
+      // the first candidate will always be a democrat
+  // if yes, add the candidate and his values
+      // the second candidate will always be a republican
+      // the third will always be referred to as 'other'
+      
+  // first let's make a single column and use it as a reference
+  // we start at 1 because cell '0' is blank
+  for(int i=1; i<allData[0].length(); i++){
+   int[] years = int(allData[0].split(","));
+   println(years);
+  }
+  
+
+  
+  
 }
