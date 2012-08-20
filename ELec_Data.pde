@@ -37,10 +37,11 @@ void parseData(){
   int[] years = int(allData[0].split(","));
   String[] names = allData[1].split(",");
   // the first column we have is Obama, 2008. It is in the second column from the left,
-  // or position 1 in the array
-  int elecYear = years[1];
+  // or position 1 in the array. Make an election object with that year, and that candidate.
+  int electionYear = years[1];
   String candidate = names[1];
-  println(elecYear + ": " + candidate);
+  Election firstElection = new Election(electionYear, candidate);    
+  }
   
   
   for(int i=1; i<allData[0].length(); i++){
