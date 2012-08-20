@@ -1,11 +1,10 @@
 class Election{
   
  int electionYear;
- ArrayList<String> names = new ArrayList(); // some elections have more than two so it needs to be flexible
  
- Election(int _year, String _firstCandidateName){
+ 
+ Election(int _year){
   electionYear = _year;
-  names.add(_firstCandidateName);
  } 
   
 }
