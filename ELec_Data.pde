@@ -15,12 +15,14 @@
 
 String filename = "US_Races.csv";
 String[] allData;
+ArrayList<Election> allElections = new ArrayList();
 
 void setup() {
   allData = loadStrings(filename);
   //println(allData);
 
   parseData();
+  checkData();
 }
 
 void parseData() {
@@ -50,16 +52,33 @@ void parseData() {
    String candidateAdd = names[2];
    firstElection.candidates.add(candidateAdd); 
   }
+  firstElection.totalCandidates = firstElection.candidates.size();
   // now let's get all the categories and throw them in the election
   // we're using a 2D array for this.
   for(int i=2; i<allData.length; i++){
     String[] thisRow = allData[i].split(",");
     String title = thisRow[0];
-    Category thisCategory = new Category(title);
-    thisCategory.values.add(thisRow[1]);
-    thisCategory.values.add(thisRow[2]);
+    Category thisCategory = new Category(title, firstElection.totalCandidates);
+    thisCategory.values[0] = int(thisRow[1]);
+    thisCategory.values [1] = int(thisRow[2]);
     firstElection.categories.add(thisCategory);
   }
+  allElections.add(firstElection);
+}
+
+void checkData(){
+ for(Election e:allElections){
+   println(e.electionYear);
+   println("-----------------------");
+   for(int i=0; i<e.candidates.size(); i++){
+    String thisCandidate = e.candidates.get(i);
+     println("<< " + thisCandidate + " >>");
+     for(int j=0; j<e.categories.size(); j++){
+      Category thisCategory = e.categories.get(j);
+      println(thisCategory.title + ": " + thisCategory.values[i]);
+     }
+   }
+ }
 }
 
 

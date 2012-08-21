@@ -1,9 +1,9 @@
 class Election{
   
  int electionYear;
- int index;
  ArrayList<String> candidates = new ArrayList();
  ArrayList<Category> categories = new ArrayList();
+ int totalCandidates;
  
  
  Election(int _year){

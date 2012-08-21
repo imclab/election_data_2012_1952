@@ -1,9 +1,10 @@
 class Category{
   
   String title;
-  ArrayList values = new ArrayList();
+  int[] values;
   
-  Category(String _title){
+  Category(String _title, int totalCandidates){
    title = _title; 
+   values = new int[totalCandidates];
   }
 }
