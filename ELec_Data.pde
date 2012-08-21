@@ -40,9 +40,28 @@ void parseData() {
   // the first column we have is Obama, 2008. It is in the second column from the left,
   // or position 1 in the array. Make an election object with that year, and that candidate.
   int electionYear = years[1];
-  String candidate = names[1];
   Election firstElection = new Election(electionYear);
-
+  // next let's look for the name under that year and add it to the Election
+  // we'll need to create an ARray List to hold these cuz we gotta be flexible
+  String candidate1 = names[1];
+  firstElection.candidates.add(candidate1);
+  // now let's check the next column and see if we have another candidate for this year
+  if(years[2] == electionYear){
+   String candidateAdd = names[2];
+   firstElection.candidates.add(candidateAdd); 
+  }
+  // now let's get all the categories and throw them in the election
+  // we're using a 2D array for this.
+  for(int i=2; i<allData.length; i++){
+    String[] thisRow = allData[i].split(",");
+    String title = thisRow[0];
+    firstElection.categories[i-2][0] = title;
+    for(int j=1; j<firstElection.candidates.size(); j++){
+     String thisValue = thisRow[i];             // this is where an object makes sense so you can mix strings and ints without having to remember to convert them later, but this is easier for me to do right now.
+     firstElection.categories[i-2][j] = thisValue;
+    }
+    
+  }
 }
 
 
