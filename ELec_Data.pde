@@ -55,12 +55,10 @@ void parseData() {
   for(int i=2; i<allData.length; i++){
     String[] thisRow = allData[i].split(",");
     String title = thisRow[0];
-    firstElection.categories[i-2][0] = title;
-    for(int j=1; j<firstElection.candidates.size(); j++){
-     String thisValue = thisRow[i];             // this is where an object makes sense so you can mix strings and ints without having to remember to convert them later, but this is easier for me to do right now.
-     firstElection.categories[i-2][j] = thisValue;
-    }
-    
+    Category thisCategory = new Category(title);
+    thisCategory.values.add(thisRow[1]);
+    thisCategory.values.add(thisRow[2]);
+    firstElection.categories.add(thisCategory);
   }
 }
 

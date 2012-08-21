@@ -1,13 +1,13 @@
 class Election{
   
  int electionYear;
+ int index;
  ArrayList<String> candidates = new ArrayList();
- String[][] categories;
+ ArrayList<Category> categories = new ArrayList();
  
  
  Election(int _year){
   electionYear = _year;
-  categories = new String[allData.length-2][3];
  } 
   
 }
