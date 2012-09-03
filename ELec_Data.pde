@@ -18,17 +18,26 @@ String[] allData;
 ArrayList<Election> allElections = new ArrayList(0);
 
 void setup() {
+  size(600, 400);
+  smooth();
+  
   allData = loadStrings(filename);
   //println(allData);
 
   parseData();
-  checkData();
+  //checkData();
+
+  background(115);
+  int renderYear = 1968;
+
+  for (Election e:allElections) {
+    if (e.electionYear == renderYear) {
+      e.render();
+    }
+  }
 }
 
 void draw() {
-  //  for (Election e:allElections) {
-  //    e.render();
-  //  }
 }
 
 void parseData() {
@@ -47,7 +56,7 @@ void parseData() {
     // add this candidate to the last election in the Array List
     if (electionYear == years[column-1]) {
       Election thisElection = allElections.get(allElections.size()-1);
-      Candidate thisCandidate = new Candidate(names[column], electionYear);
+      Candidate thisCandidate = new Candidate(names[column], electionYear, thisElection.totalCandidates + 1);
       // for every row of data, match the candidate with the value for that row
       for (int i=2; i<allData.length; i++) {
         String[] thisRow = allData[i].split(",");
@@ -57,10 +66,11 @@ void parseData() {
         thisCandidate.categories.add(thisCategory);
       }
       thisElection.candidates.add(thisCandidate);
+      thisElection.totalCandidates++;
     } 
     else {  // create a new election and add the first candidate
       Election thisElection = new Election(electionYear);
-      Candidate thisCandidate = new Candidate(names[column], electionYear);
+      Candidate thisCandidate = new Candidate(names[column], electionYear, 1);
       // for every row of data, match the candidate with the value for that row
       for (int i=2; i<allData.length; i++) {
         String[] thisRow = allData[i].split(",");
@@ -82,7 +92,7 @@ void init_Elections() {
   int electionYear = years[1];
   Election firstElection = new Election(electionYear);
 
-  Candidate firstCandidate = new Candidate(names[1], electionYear);
+  Candidate firstCandidate = new Candidate(names[1], electionYear, 1);
   firstElection.candidates.add(firstCandidate);
   for (int i=2; i<allData.length; i++) {
     String[] thisRow = allData[i].split(",");
@@ -91,7 +101,7 @@ void init_Elections() {
     Category thisCategory = new Category(title, value);
     firstCandidate.categories.add(thisCategory);
   }
-  Candidate secondCandidate = new Candidate(names[2], electionYear);
+  Candidate secondCandidate = new Candidate(names[2], electionYear, 2);
   firstElection.candidates.add(secondCandidate);
   for (int i=2; i<allData.length; i++) {
     String[] thisRow = allData[i].split(",");
@@ -107,35 +117,35 @@ void init_Elections() {
 
 
 void checkData() {  
-  
+
   /* check all data for one election */
-  int checkYear = 1952;
-  
-  for(Election e:allElections){
-   if(e.electionYear == checkYear){
-    println("Election Year= " + checkYear);
-    for(Candidate c:e.candidates){
-     println("<< " + c.name + " >>");
-     for(Category cat:c.categories){
-      println(cat.title + ": " + cat.value);
-     }
-     println(" ");
-    }
-   } 
-  }
-  
+  //  int checkYear = 1952;
+  //  
+  //  for(Election e:allElections){
+  //   if(e.electionYear == checkYear){
+  //    println("Election Year= " + checkYear);
+  //    for(Candidate c:e.candidates){
+  //     println("<< " + c.name + " >>");
+  //     for(Category cat:c.categories){
+  //      println(cat.title + ": " + cat.value);
+  //     }
+  //     println(" ");
+  //    }
+  //   } 
+  //  }
+
   /* check dates and names for all elections */
-//  for (Election e:allElections) {
-//    print("--------------");
-//    println(e.electionYear);
-//    for (Candidate c:e.candidates) {
-//      println("<< " + c.name + " >>");
-//      //      for (int i=0; i<c.categories.size(); i++) {
-//      //        Category thisCategory = c.categories.get(i);
-//      //        println(thisCategory.title + ": " + thisCategory.value);
-//      //      }
-//    }
-//    println(" ");
-//  }
+  for (Election e:allElections) {
+    print("--------------");
+    println(e.electionYear);
+    for (Candidate c:e.candidates) {
+      println("<< " + c.name + " >>");
+      //      for (int i=0; i<c.categories.size(); i++) {
+      //        Category thisCategory = c.categories.get(i);
+      //        println(thisCategory.title + ": " + thisCategory.value);
+      //      }
+    }
+    println(" ");
+  }
 }
 
