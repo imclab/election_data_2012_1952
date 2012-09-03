@@ -1,3 +1,22 @@
+import processing.core.*; 
+import processing.xml.*; 
+
+import java.applet.*; 
+import java.awt.Dimension; 
+import java.awt.Frame; 
+import java.awt.event.MouseEvent; 
+import java.awt.event.KeyEvent; 
+import java.awt.event.FocusEvent; 
+import java.awt.Image; 
+import java.io.*; 
+import java.net.*; 
+import java.text.*; 
+import java.util.*; 
+import java.util.zip.*; 
+import java.util.regex.*; 
+
+public class ELec_Data extends PApplet {
+
 /* 
  Election Data 
  A series of tutorials for importing table data 
@@ -18,7 +37,7 @@ String[] allData;
 ArrayList<Election> allElections = new ArrayList(0);
 PFont font;
 
-void setup() {
+public void setup() {
   size(800, 600);
   background(115);
   smooth();
@@ -36,16 +55,16 @@ void setup() {
   }
 }
 
-void draw() {
+public void draw() {
 }
 
-void parseData() {
+public void parseData() {
 
   // make the first Election so we have something to compare to
   init_Elections();
   //checkData();
 
-  int[] years = int(allData[0].split(","));
+  int[] years = PApplet.parseInt(allData[0].split(","));
   String[] names = allData[1].split(",");
 
   for (int column=3; column<years.length; column++) {
@@ -60,7 +79,7 @@ void parseData() {
       for (int i=2; i<allData.length; i++) {
         String[] thisRow = allData[i].split(",");
         String title = thisRow[0];
-        int value = int(thisRow[column]);
+        int value = PApplet.parseInt(thisRow[column]);
         Category thisCategory = new Category(title, value);
         thisCandidate.categories.add(thisCategory);
       }
@@ -74,7 +93,7 @@ void parseData() {
       for (int i=2; i<allData.length; i++) {
         String[] thisRow = allData[i].split(",");
         String title = thisRow[0];
-        int value = int(thisRow[column]);
+        int value = PApplet.parseInt(thisRow[column]);
         Category thisCategory = new Category(title, value);
         thisCandidate.categories.add(thisCategory);
       }
@@ -84,8 +103,8 @@ void parseData() {
   }
 }
 
-void init_Elections() {
-  int[] years = int(allData[0].split(","));
+public void init_Elections() {
+  int[] years = PApplet.parseInt(allData[0].split(","));
   String[] names = allData[1].split(",");
 
   int electionYear = years[1];
@@ -96,7 +115,7 @@ void init_Elections() {
   for (int i=2; i<allData.length; i++) {
     String[] thisRow = allData[i].split(",");
     String title = thisRow[0]; 
-    int value = int(thisRow[1]); // same column as the name
+    int value = PApplet.parseInt(thisRow[1]); // same column as the name
     Category thisCategory = new Category(title, value);
     firstCandidate.categories.add(thisCategory);
   }
@@ -105,7 +124,7 @@ void init_Elections() {
   for (int i=2; i<allData.length; i++) {
     String[] thisRow = allData[i].split(",");
     String title = thisRow[0]; 
-    int value = int(thisRow[2]);
+    int value = PApplet.parseInt(thisRow[2]);
     Category thisCategory = new Category(title, value);
     secondCandidate.categories.add(thisCategory);
   }
@@ -115,7 +134,7 @@ void init_Elections() {
 
 
 
-void checkData() {  
+public void checkData() {  
 
   /* check all data for one election */
   //  int checkYear = 1952;
@@ -148,3 +167,87 @@ void checkData() {
   }
 }
 
+class Candidate{
+  
+ String name;
+ int elecYear;
+ ArrayList<Category> categories = new ArrayList();
+ int index;
+
+ Candidate(String _name, int _year, int _index){
+  name = _name;
+  elecYear = _year;
+  index = _index;
+ } 
+  
+}
+class Category{
+  
+  String title;
+  float value;
+  
+  Category(String _title, int _value){
+   title = _title; 
+   value = _value;
+  }
+}
+class Election {
+
+  int electionYear;
+  ArrayList<Candidate> candidates = new ArrayList();
+  int totalCandidates;
+
+
+  Election(int _year) {
+    electionYear = _year;
+    totalCandidates = 1;
+  } 
+
+  public void render() {
+    // choose a category title and display it for each candidate
+
+    // let's start easy and just make some circles. blue for democratic, red for republican
+    // if there is a third candidate we'll fill them in with light grey    
+    String searchTitle = "Women";
+    int[] colors = {
+      color(0, 0, 255), color(255, 0, 0), color(155)
+    };
+    noStroke();
+
+    float x = width/2;
+    float y = height/2;
+    float renderRadius = 250;
+    float hole = 0.65f*renderRadius;
+    float start = radians(90);
+
+    for (int i=0; i<totalCandidates; i++) {
+      Candidate thisCandidate = candidates.get(i);
+      for (int j=0; j<thisCandidate.categories.size(); j++) {
+        Category thisCategory = thisCandidate.categories.get(j);
+        if (thisCategory.title.equals(searchTitle)) {
+          float renderValue = start + radians(thisCategory.value/100 * 360);
+          fill(colors[i]); // the first candidate is always a Democrat
+          arc(x, y, renderRadius, renderRadius, start, renderValue); 
+          start = renderValue;
+        }
+      }
+      textFont(font, 72);
+      fill(240);
+      if (i == 0) {
+        textAlign(LEFT);
+        text(thisCandidate.name, x - 300, y);
+      } 
+      else if (i == 1) {
+        textAlign(RIGHT);
+        text(thisCandidate.name, x + 300, y);
+      } 
+    }
+    fill(115);
+    ellipse(x, y, hole, hole);
+  }
+}
+
+  static public void main(String args[]) {
+    PApplet.main(new String[] { "--bgcolor=#FFFFFF", "ELec_Data" });
+  }
+}

@@ -38,28 +38,19 @@ class Election {
           start = renderValue;
         }
       }
-      textFont(font, 60);
+      textFont(font, 72);
+      fill(240);
       if (i == 0) {
         textAlign(LEFT);
-        fill(240);
         text(thisCandidate.name, x - 300, y);
-        
       } 
       else if (i == 1) {
         textAlign(RIGHT);
-        fill(240);
         text(thisCandidate.name, x + 300, y);
       } 
     }
     fill(115);
     ellipse(x, y, hole, hole);
-    
-    textFont(font, 80);
-    textAlign(CENTER);
-    fill(0, 70);
-    text(electionYear, x-3, 123);
-    fill(240);
-    text(electionYear, x,120);
   }
 }
 
