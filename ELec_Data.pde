@@ -57,7 +57,7 @@ void parseData() {
       Category thisCategory = new Category(title, thisElection.candidates.size());
       for (int j=0; j<thisElection.candidates.size(); j++) {
         thisCategory.values[j] = int(thisRow[column+j]);
-        println(title + ": " + thisCategory.values[j]);
+        thisElection.categories.add(thisCategory);
       }
     }
   }
@@ -100,9 +100,7 @@ void parseData() {
         //        Category thisCategory = e.categories.get(j);
         //        println(thisCategory.title + ": " + thisCategory.values[i]);
         //      }
-        
-        println(
-      }
+              }
       println(" ");
     }
   }
