@@ -1,10 +1,10 @@
 class Category{
   
   String title;
-  int[] values;
+  int value;
   
-  Category(String _title, int totalCandidates){
+  Category(String _title, int _value){
    title = _title; 
-   values = new int[totalCandidates];
+   value = _value;
   }
 }
