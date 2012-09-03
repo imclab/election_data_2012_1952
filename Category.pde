@@ -1,7 +1,7 @@
 class Category{
   
   String title;
-  int value;
+  float value;
   
   Category(String _title, int _value){
    title = _title; 
