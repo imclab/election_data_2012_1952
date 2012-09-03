@@ -10,19 +10,19 @@ class Election {
     totalCandidates = 1;
   } 
 
-  void render() {
+  void render(String _category) {
     // choose a category title and display it for each candidate
 
     // let's start easy and just make some circles. blue for democratic, red for republican
     // if there is a third candidate we'll fill them in with light grey    
-    String searchTitle = "Women";
+    String searchTitle = _category;
     color[] colors = {
       color(0, 0, 255), color(255, 0, 0), color(155)
     };
     noStroke();
 
     float x = width/2;
-    float y = height/2;
+    float y = 300;
     float renderRadius = 250;
     float hole = 0.65*renderRadius;
     float start = radians(90);
@@ -38,28 +38,21 @@ class Election {
           start = renderValue;
         }
       }
-      textFont(font, 60);
+      textFont(nameFont, 60);
       if (i == 0) {
         textAlign(LEFT);
         fill(240);
-        text(thisCandidate.name, x - 300, y);
+        text(thisCandidate.name, x - 300, y+20);
         
       } 
       else if (i == 1) {
         textAlign(RIGHT);
         fill(240);
-        text(thisCandidate.name, x + 300, y);
+        text(thisCandidate.name, x + 300, y+20);
       } 
     }
     fill(115);
     ellipse(x, y, hole, hole);
-    
-    textFont(font, 80);
-    textAlign(CENTER);
-    fill(0, 70);
-    text(electionYear, x-3, 123);
-    fill(240);
-    text(electionYear, x,120);
   }
 }
 
