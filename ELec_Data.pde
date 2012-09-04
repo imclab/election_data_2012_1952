@@ -20,10 +20,10 @@ PFont nameFont;
 PFont yearFont;
 
 void setup() {
-  size(800, 800);
+  size(1000, 800);
   background(115);
   smooth();
-  nameFont = loadFont("AmericanPurpose-48.vlw");
+  nameFont = loadFont("Arial-Black-48.vlw");
   yearFont = loadFont("AppleGothic-48.vlw");
 
   allData = loadStrings(filename);
@@ -38,15 +38,16 @@ void setup() {
     }
   }
   
-  textFont(yearFont, 26);
-  textAlign(CENTER);
-  fill(200);
-  text("Category: ", 200, 100);
-  text("Year: ", 500, 100);
-  fill(255);
-  text("\"" + renderCategory + "\"", 320, 100);
-  text(renderYear, 575, 100);
+  textFont(yearFont, 66);
   
+  fill(0);
+  rect(0,0, renderCategory.length()*70, 100);
+  fill(225);
+  rect(0,100,300,100);
+  text(renderCategory, 25, 75);
+  fill(0);
+  text(renderYear, 25, 170);
+    
 }
 
 void draw() {

@@ -22,11 +22,11 @@ class Election {
     noStroke();
 
     float x = width/2;
-    float y = 300;
-    float renderRadius = 250;
-    float hole = 0.65*renderRadius;
+    float y = height/2;
+    float renderRadius = height;
+    float hole = 0.35*renderRadius;
     float start = radians(90);
-
+    
     for (int i=0; i<totalCandidates; i++) {
       Candidate thisCandidate = candidates.get(i);
       for (int j=0; j<thisCandidate.categories.size(); j++) {
@@ -38,21 +38,18 @@ class Election {
           start = renderValue;
         }
       }
-      textFont(nameFont, 60);
-      if (i == 0) {
-        textAlign(LEFT);
-        fill(240);
-        text(thisCandidate.name, x - 300, y+20);
-        
-      } 
-      else if (i == 1) {
-        textAlign(RIGHT);
-        fill(240);
-        text(thisCandidate.name, x + 300, y+20);
-      } 
     }
-    fill(115);
+ 
+    stroke(115);
+    strokeWeight(5);
+    for(int angle=0; angle<360; angle+=2){
+     line(x, y, (x + cos(radians(angle))*(renderRadius/2)), (y + sin(radians(angle))*(renderRadius/2))); 
+    }
+    
+     fill(115);
+    noStroke();
     ellipse(x, y, hole, hole);
+    
   }
 }
 
