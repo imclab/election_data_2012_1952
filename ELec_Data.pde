@@ -15,7 +15,8 @@
 
 String filename = "US_Races.csv";
 String[] allData;
-ArrayList<Election> allElections = new ArrayList(0);
+ArrayList<Election> allElections = new ArrayList();
+ArrayList<Candidate> allCandidates = new ArrayList();
 PFont nameFont;
 PFont yearFont;
 
@@ -36,25 +37,23 @@ void setup() {
     if (e.electionYear == renderYear) {
       e.render(renderCategory);
     }
-  }
-  
-  textFont(yearFont, 66);
-  
+  }  
+  renderGraph(renderCategory);
+  noStroke();
+  textFont(yearFont, 66);  
   fill(0);
-  rect(0,0, renderCategory.length()*70, 100);
+  rect(0, 0, renderCategory.length()*65, 100);
   fill(225);
-  rect(0,100,300,100);
+  rect(0, 100, 250, 100);
   text(renderCategory, 25, 75);
   fill(0);
   text(renderYear, 25, 170);
-    
 }
 
 void draw() {
 }
 
 void parseData() {
-
   // make the first Election so we have something to compare to
   init_Elections();
   //checkData();
@@ -79,7 +78,8 @@ void parseData() {
         thisCandidate.categories.add(thisCategory);
       }
       thisElection.candidates.add(thisCandidate);
-      thisElection.totalCandidates++;
+      thisElection.totalCandidates++;      
+      allCandidates.add(thisCandidate);
     } 
     else {  // create a new election and add the first candidate
       Election thisElection = new Election(electionYear);
@@ -94,6 +94,7 @@ void parseData() {
       }
       thisElection.candidates.add(thisCandidate);
       allElections.add(thisElection);
+      allCandidates.add(thisCandidate);
     }
   }
 }
@@ -114,6 +115,8 @@ void init_Elections() {
     Category thisCategory = new Category(title, value);
     firstCandidate.categories.add(thisCategory);
   }
+  allCandidates.add(firstCandidate);
+
   Candidate secondCandidate = new Candidate(names[2], electionYear, 2);
   firstElection.candidates.add(secondCandidate);
   for (int i=2; i<allData.length; i++) {
@@ -123,11 +126,87 @@ void init_Elections() {
     Category thisCategory = new Category(title, value);
     secondCandidate.categories.add(thisCategory);
   }
+  allCandidates.add(secondCandidate);
+
   allElections.add(firstElection);
 }
 
-
-
+void renderGraph(String _category) {
+  int demCounter = 0;
+  int repCounter = 0;
+  int oCounter = 0;
+  float[] democrats = new float[allElections.size()];
+  float[] republicans = new float[allElections.size()];
+  float[] other = new float[allElections.size()];
+    
+  for(int i=allElections.size()-1; i>=0; i--){
+   Election thisElection = allElections.get(i);
+   for(Candidate c:thisElection.candidates){
+    if(c.index == 1){
+     for(Category cat:c.categories){
+      if(cat.title.equals(_category)){
+       democrats[demCounter] = cat.value;
+       demCounter++; 
+      }
+     } 
+    } else if(c.index == 2){
+      for(Category cat:c.categories){
+      if(cat.title.equals(_category)){
+       republicans[repCounter] = cat.value; 
+       repCounter++;
+      }
+     } 
+    } else if(c.index == 3){
+      for(Category cat:c.categories){
+      if(cat.title.equals(_category)){
+       other[oCounter] = cat.value; 
+       oCounter++;
+      }
+     } 
+    }
+   } 
+  }
+  
+  float secWidth = width/(allElections.size()+1);
+  int graphTop = height - 150;
+  int graphBottom = height - 50;
+  int graphHeight = graphBottom - graphTop;
+  strokeWeight(3);
+  noFill();
+  
+  beginShape(); // for Dems
+  stroke(0,0,255);
+  for(int i=0; i<democrats.length; i++){
+   float thisValue = map(democrats[i], 0, 100, 0, graphHeight);
+   vertex(secWidth*(i+1), graphBottom - thisValue);
+   //ellipse(secWidth*(i+1), graphBottom - thisValue, 3, 3);
+  }
+  endShape();
+  
+  beginShape(); // for Repubs
+  stroke(255,0,0);
+  for(int i=0; i<republicans.length; i++){
+   float thisValue = map(republicans[i], 0, 100, 0, graphHeight);
+   vertex(secWidth*(i+1), graphBottom - thisValue);
+   //ellipse(secWidth*(i+1), graphBottom - thisValue, 3, 3);
+  }
+  endShape();
+  
+  beginShape(); // for Other
+  stroke(155);
+  for(int i=0; i<other.length; i++){
+   float thisValue = map(other[i], 0, 100, 0, graphHeight);
+   vertex(secWidth*(i+1), graphBottom - thisValue);
+   //ellipse(secWidth*(i+1), graphBottom - thisValue, 3, 3);
+  }
+  endShape();
+  
+  stroke(75, 150);
+  strokeWeight(1);
+  for(int i=1; i<allElections.size()+1; i++){
+  line(secWidth*i, height, secWidth*i, graphBottom - (max(democrats[i-1], republicans[i-1])));
+  }
+}
 
 void checkData() {  
 

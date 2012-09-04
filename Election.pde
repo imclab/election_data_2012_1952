@@ -22,8 +22,8 @@ class Election {
     noStroke();
 
     float x = width/2;
-    float y = height/2;
-    float renderRadius = height;
+    float y = height/2 - 50;
+    float renderRadius = 600;
     float hole = 0.35*renderRadius;
     float start = radians(90);
     
