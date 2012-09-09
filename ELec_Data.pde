@@ -18,7 +18,6 @@ String[] allData;
 ArrayList<Election> allElections = new ArrayList();
 ArrayList<Candidate> allCandidates = new ArrayList();
 
-int renderYear;
 float secWidth;
 int graphTop;
 int graphBottom;
@@ -27,6 +26,8 @@ int graphIndex;
 
 PFont nameFont;
 PFont yearFont;
+
+int renderYear = 2000;
 
 
 void setup() {
@@ -48,7 +49,6 @@ void setup() {
 }
 
 void draw() {
-  renderYear = 2000;
   String renderCategory = "Women";
   renderGraph(renderCategory);
   for (Election e:allElections) {
@@ -189,7 +189,7 @@ void renderGraph(String _category) {
   noFill();
 
   beginShape(); // for Dems
-  stroke(0, 0, 255);
+  stroke(#0D3574);
   for (int i=0; i<democrats.length; i++) {
     float thisValue = map(democrats[i], 0, 100, 0, graphHeight);
     vertex(secWidth*(i+1), graphBottom - thisValue);
@@ -198,7 +198,7 @@ void renderGraph(String _category) {
   endShape();
 
   beginShape(); // for Repubs
-  stroke(255, 0, 0);
+  stroke(#FF3434);
   for (int i=0; i<republicans.length; i++) {
     float thisValue = map(republicans[i], 0, 100, 0, graphHeight);
     vertex(secWidth*(i+1), graphBottom - thisValue);
@@ -207,7 +207,7 @@ void renderGraph(String _category) {
   endShape();
 
   beginShape(); // for Other
-  stroke(155);
+  stroke(210);
   for (int i=0; i<other.length; i++) {
     float thisValue = map(other[i], 0, 100, 0, graphHeight);
     vertex(secWidth*(i+1), graphBottom - thisValue);
@@ -228,8 +228,13 @@ void renderGraph(String _category) {
 }
 
 
-void checkMouse(){
-
+void mousePressed(){
+  for(int i=1; i<allElections.size()+1; i++){
+    if(mouseX > secWidth*i - secWidth/2 && mouseX < secWidth*(i+1) - secWidth/2){
+      Election thisElection = allElections.get(i);
+      renderYear = thisElection.electionYear;
+    }
+  }
 }
 
 

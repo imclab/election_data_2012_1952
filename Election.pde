@@ -18,14 +18,14 @@ class Election {
     // if there is a third candidate we'll fill them in with light grey    
     String searchTitle = _category;
     color[] colors = {
-      color(0, 0, 255), color(255, 0, 0), color(155)
+      color(#0D3574), color(#FF3434), color(210)
     };
     noStroke();
 
     float x = width/2;
     float y = height/2 - 50;
     float renderRadius = 600;
-    float hole = 0.35*renderRadius;
+    float hole = 0.55*renderRadius;
     float start = radians(90);
     int index;
     
@@ -48,13 +48,36 @@ class Election {
      line(x, y, (x + cos(radians(angle))*(renderRadius/2)), (y + sin(radians(angle))*(renderRadius/2))); 
     }
     
-    fill(115);
+    fill(100);
     noStroke();
-    ellipse(x, y, hole, hole);     
+    ellipse(x, y, hole, hole);  
+ 
+    for(Candidate c:candidates){
+      int startY;
+      float spacing;
+      
+      if(candidates.size() > 2){
+       startY = 190; 
+       spacing = 80*c.index;
+      } else {
+       startY = 235;
+       spacing = 80*c.index;
+      }
+      textFont(nameFont, 28);
+      fill(colors[c.index-1]);
+      textAlign(CENTER);
+      strokeWeight(1);
+      text(c.name, width/2, startY + spacing);
+      for(Category cat:c.categories){
+       if(cat.title.equals(searchTitle)){
+        text(int(cat.value) + "%", width/2, startY + 30 + 80*c.index);
+       } 
+      }
+      textAlign(LEFT);
+    }   
     
   }
-  
-  
+   
   void renderFlag(int _i, int _max){
     _i = _i + 1;
     if(mouseX > secWidth*_i - secWidth/2 && mouseX < secWidth*(_i+1) - secWidth/2){
