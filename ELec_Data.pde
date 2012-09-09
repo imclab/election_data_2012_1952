@@ -232,7 +232,7 @@ void renderGraph(String _category) {
 void mousePressed(){
   for(int i=1; i<allElections.size()+1; i++){
     if(mouseX > secWidth*i - secWidth/2 && mouseX < secWidth*(i+1) - secWidth/2){
-      Election thisElection = allElections.get(i);
+      Election thisElection = allElections.get(allElections.size()-i);
       renderYear = thisElection.electionYear;
     }
   }
