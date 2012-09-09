@@ -28,6 +28,7 @@ PFont nameFont;
 PFont yearFont;
 
 int renderYear = 2000;
+float prevYearStart = 0;
 
 
 void setup() {
@@ -222,7 +223,7 @@ void renderGraph(String _category) {
   }
   
   strokeWeight(5);
-  stroke(0);
+  stroke(25);
   line(secWidth, graphBottom, width - secWidth - 9, graphBottom);
   
 }

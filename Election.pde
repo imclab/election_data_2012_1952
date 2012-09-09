@@ -57,7 +57,7 @@ class Election {
       float spacing;
       
       if(candidates.size() > 2){
-       startY = 190; 
+       startY = 1; 
        spacing = 80*c.index;
       } else {
        startY = 235;
