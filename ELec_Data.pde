@@ -23,17 +23,23 @@ int graphTop;
 int graphBottom;
 int graphHeight;
 int graphIndex;
+float margin;
 
 PFont nameFont;
 PFont yearFont;
 
 int renderYear = 2000;
-float prevYearStart = 0;
+String renderCategory = "Women";
+int yearFontSize = 50;
+int nameFontSize = 28;
+int boxHeight = 80;
 
+boolean categoryMenu = false;
+boolean yearMenu = false;
 
+//_________________________________________________setup()______________________________
 void setup() {
   size(1000, 800);
-  background(115);
   smooth();
   nameFont = loadFont("Arial-Black-48.vlw");
   yearFont = loadFont("AppleGothic-48.vlw");
@@ -46,28 +52,39 @@ void setup() {
   graphTop = height - 150;
   graphBottom = height - 50;
   graphHeight = graphBottom - graphTop;
+  margin = .04 * width;
 
 }
 
+//_________________________________________________draw()______________________________
 void draw() {
-  String renderCategory = "Women";
-  renderGraph(renderCategory);
+  if(categoryMenu == true){
+   displayCategoryMenu(); 
+  } else if(yearMenu == true){
+   displayYearMenu(); 
+  } else {
+  background(115);
   for (Election e:allElections) {
     if (e.electionYear == renderYear) {
       e.render(renderCategory);
     }
   }  
   noStroke();
-  textFont(yearFont, 66);  
-  fill(0);
-  rect(0, 0, renderCategory.length()*65, 100);
-  fill(225);
-  rect(0, 100, 250, 100);
-  text(renderCategory, 25, 75);
-  fill(0);
-  text(renderYear, 25, 170);
+  textFont(yearFont, yearFontSize);  
+  fill(240);
+  rect(0, margin, textWidth(renderCategory)*1.25 + margin, boxHeight);
+  fill(25);
+  //rect(0, boxHeight, textWidth("year" + "000"), boxHeight); // this will be obsolete in the year 10,000
+  text(renderCategory, margin, margin + boxHeight - yearFontSize/2);
+  //fill(0);
+  //text(renderYear, textWidth("a"), boxHeight*2 - yearFontSize/2);
+  
+  renderGraph(renderCategory);
+  
+} 
 }
 
+//_________________________________________________parseData()______________________________
 void parseData() {
   // make the first Election so we have something to compare to
   init_Elections();
@@ -109,12 +126,14 @@ void parseData() {
       }
       thisElection.candidates.add(thisCandidate);
       allElections.add(thisElection);
+      thisElection.totalCandidates = 1;
       thisElection.index = allElections.size();
       allCandidates.add(thisCandidate);
     }
   }
 }
 
+//_________________________________________________initElections()______________________________
 void init_Elections() {
   int[] years = int(allData[0].split(","));
   String[] names = allData[1].split(",");
@@ -133,6 +152,7 @@ void init_Elections() {
     firstCandidate.categories.add(thisCategory);
   }
   allCandidates.add(firstCandidate);
+  firstCandidate.index = 1;
 
   Candidate secondCandidate = new Candidate(names[2], electionYear, 2);
   firstElection.candidates.add(secondCandidate);
@@ -144,51 +164,64 @@ void init_Elections() {
     secondCandidate.categories.add(thisCategory);
   }
   allCandidates.add(secondCandidate);
-
+  secondCandidate.index = 2;
+  firstElection.totalCandidates = 2;
+  firstElection.index = 1;
   allElections.add(firstElection);
 }
 
+//_________________________________________________renderGraph()______________________________
 void renderGraph(String _category) {
   int demCounter = 0;
   int repCounter = 0;
-  int oCounter = 0;
   float[] democrats = new float[allElections.size()];
   float[] republicans = new float[allElections.size()];
-  float[] other = new float[allElections.size()];
+  
+  ArrayList<Election> others = new ArrayList();  
+  for(Election e:allElections){
+   if(e.totalCandidates > 2){
+    others.add(e); 
+  }
+  }
 
   for (int i=allElections.size()-1; i>=0; i--) {
     Election thisElection = allElections.get(i);
-    for (Candidate c:thisElection.candidates) {
-      if (c.index == 1) {
-        for (Category cat:c.categories) {
+    for (int j=0; j<thisElection.totalCandidates; j++) {
+      if (j+1 == 1) {
+       Candidate thisCandidate = thisElection.candidates.get(j);      
+        for (Category cat:thisCandidate.categories) {
           if (cat.title.equals(_category)) {
             democrats[demCounter] = cat.value;
             demCounter++;
           }
         }
       } 
-      else if (c.index == 2) {
-        for (Category cat:c.categories) {
+      else if (j+1 == 2) {
+        Candidate thisCandidate = thisElection.candidates.get(j); 
+        for (Category cat:thisCandidate.categories) {
           if (cat.title.equals(_category)) {
             republicans[repCounter] = cat.value; 
             repCounter++;
           }
         }
       } 
-      else if (c.index == 3) {
-        for (Category cat:c.categories) {
-          if (cat.title.equals(_category)) {
-            other[oCounter] = cat.value; 
-            oCounter++;
-          }
-        }
-      }
     }
   }
-
+  
+  // draw flags and marker lines
+  for(int i=0; i<allElections.size(); i++){
+   Election thisElection = allElections.get(i);
+   int maxValue = int(max(democrats[i], republicans[i]));
+   stroke(255,100);
+   strokeWeight(1);
+   line(secWidth*thisElection.index, graphBottom,secWidth*thisElection.index, graphBottom - maxValue);
+   thisElection.renderFlag(i);   
+  }
+  
+  
+  // draw the lines
   strokeWeight(3);
   noFill();
-
   beginShape(); // for Dems
   stroke(#0D3574);
   for (int i=0; i<democrats.length; i++) {
@@ -206,69 +239,88 @@ void renderGraph(String _category) {
     //ellipse(secWidth*(i+1), graphBottom - thisValue, 3, 3);
   }
   endShape();
-
-  beginShape(); // for Other
-  stroke(210);
-  for (int i=0; i<other.length; i++) {
-    float thisValue = map(other[i], 0, 100, 0, graphHeight);
-    vertex(secWidth*(i+1), graphBottom - thisValue);
-    //ellipse(secWidth*(i+1), graphBottom - thisValue, 3, 3);
-  }
-  endShape();
   
-  for(int i=0; i<allElections.size(); i++){
-   Election thisElection = allElections.get(0);
-   int maxValue = int(max(democrats[i], republicans[i]));
-   thisElection.renderFlag(i, maxValue);
-  }
-  
+  // bottom line
   strokeWeight(5);
   stroke(25);
-  line(secWidth, graphBottom, width - secWidth - 9, graphBottom);
-  
+  line(secWidth, graphBottom, width - secWidth, graphBottom);
+
+  stroke(210); // for others
+  strokeWeight(2); 
+  for(int i=0; i<others.size(); i++){
+   Election thisElection = others.get(i);
+   Candidate thisCandidate = thisElection.candidates.get(2);
+   for(Category cat:thisCandidate.categories){
+    if(cat.title.equals(_category)){
+     float thisValue = map(cat.value, 0, 100, 0, graphHeight);
+     ellipse(width - secWidth*thisElection.index - 8, graphBottom - thisValue, 5, 5);
+    } 
+   }
+  }
 }
 
-
-void mousePressed(){
+//_________________________________________________mouseReleased()______________________________
+void mouseReleased(){
   for(int i=1; i<allElections.size()+1; i++){
-    if(mouseX > secWidth*i - secWidth/2 && mouseX < secWidth*(i+1) - secWidth/2){
+    if(mouseX > secWidth*i - secWidth/2 && mouseX < secWidth*(i+1) - secWidth/2 && mouseY > graphTop){
       Election thisElection = allElections.get(allElections.size()-i);
       renderYear = thisElection.electionYear;
     }
   }
-}
-
-
-void checkData() {  
-
-  /* check all data for one election */
-  //  int checkYear = 1952;
-  //  
-  //  for(Election e:allElections){
-  //   if(e.electionYear == checkYear){
-  //    println("Election Year= " + checkYear);
-  //    for(Candidate c:e.candidates){
-  //     println("<< " + c.name + " >>");
-  //     for(Category cat:c.categories){
-  //      println(cat.title + ": " + cat.value);
-  //     }
-  //     println(" ");
-  //    }
-  //   } 
-  //  }
-
-  /* check dates and names for all elections */
-  for (Election e:allElections) {
-    print("--------------");
-    println(e.electionYear);
-    for (Candidate c:e.candidates) {
-      println("<< " + c.name + " >>");
-      //      for (int i=0; i<c.categories.size(); i++) {
-      //        Category thisCategory = c.categories.get(i);
-      //        println(thisCategory.title + ": " + thisCategory.value);
-      //      }
-    }
-    println(" ");
+  
+  if(mouseY < 100 && mouseX < renderCategory.length()*60){
+  categoryMenu = !categoryMenu;
+  } 
+  
+  if(mouseY > 100 && mouseY < 200 && mouseX < 250){
+  yearMenu = !yearMenu;
   }
 }
+
+
+//_________________________________________________displayCategoryMenu()______________________________
+void displayCategoryMenu(){ 
+ int heightTracker = 0;
+ int rowCounter = 0;
+
+ for(int i=2; i<allData.length; i++){
+  float boxX = textWidth(renderCategory)+50 + (rowCounter *200);
+  
+  String[] thisRow = allData[i].split(",");
+  strokeWeight(1);
+  
+  if(mouseX > boxX && mouseX < boxX + 200 && mouseY > heightTracker && mouseY < heightTracker + 20){
+  fill(255);
+  rect(boxX, heightTracker, 200, 20);
+  fill(0);
+  textFont(yearFont, 12);
+  text(thisRow[0], boxX+5, heightTracker + 15);
+   if(mousePressed){
+    renderCategory = thisRow[0];
+    categoryMenu = false; 
+   }
+  } else {
+  fill(0);
+  stroke(255);
+  rect(boxX, heightTracker, 200, 20);
+  fill(255);
+  textFont(yearFont, 12);
+  text(thisRow[0], boxX+5, heightTracker + 15);
+  }
+  
+  heightTracker += 20;
+  
+  if(heightTracker > height - 40){
+   heightTracker = 0;
+   rowCounter ++; 
+  }
+ }
+}
+
+void displayYearMenu(){
+  
+}
+
+
+
 

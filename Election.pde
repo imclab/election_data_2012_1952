@@ -13,7 +13,6 @@ class Election {
 
   void render(String _category) {
     // choose a category title and display it for each candidate
-
     // let's start easy and just make some circles. blue for democratic, red for republican
     // if there is a third candidate we'll fill them in with light grey    
     String searchTitle = _category;
@@ -22,12 +21,11 @@ class Election {
     };
     noStroke();
 
-    float x = width/2;
+    float x = width/2 + margin;
     float y = height/2 - 50;
     float renderRadius = 600;
     float hole = 0.55*renderRadius;
     float start = radians(90);
-    int index;
     
     for (int i=0; i<totalCandidates; i++) {
       Candidate thisCandidate = candidates.get(i);
@@ -48,10 +46,12 @@ class Election {
      line(x, y, (x + cos(radians(angle))*(renderRadius/2)), (y + sin(radians(angle))*(renderRadius/2))); 
     }
     
+    // draw the hole
     fill(100);
     noStroke();
     ellipse(x, y, hole, hole);  
  
+    // fill the hole with data 
     for(Candidate c:candidates){
       int startY;
       float spacing;
@@ -63,24 +63,33 @@ class Election {
        startY = 235;
        spacing = 80*c.index;
       }
-      textFont(nameFont, 28);
+      textFont(nameFont, nameFontSize);
       fill(colors[c.index-1]);
       textAlign(CENTER);
       strokeWeight(1);
-      text(c.name, width/2, startY + spacing);
+      text(c.name, x, startY + spacing);
       for(Category cat:c.categories){
        if(cat.title.equals(searchTitle)){
-        text(int(cat.value) + "%", width/2, startY + 30 + 80*c.index);
+        text(int(cat.value) + "%", x, startY + 30 + 80*c.index);
        } 
       }
       textAlign(LEFT);
-    }   
+    }    
     
+    // greyFlag
+    stroke(255, 100);
+    line(width - (secWidth*index) - 8, height-10, width - (secWidth*index) - 8, graphBottom);
+    fill(255, 100);
+    noStroke();
+    rect(width - (secWidth*index) - 8, height-30, secWidth, 20);
+    textFont(yearFont, 12);
+    fill(0);
+    text(electionYear, width - (secWidth*index-5), height - 15);
   }
    
-  void renderFlag(int _i, int _max){
+  void renderFlag(int _i){
     _i = _i + 1;
-    if(mouseX > secWidth*_i - secWidth/2 && mouseX < secWidth*(_i+1) - secWidth/2){
+    if(mouseX > secWidth*_i - secWidth/2 && mouseX < secWidth*(_i+1) - secWidth/2 && mouseY > graphTop){
        stroke(255);
        strokeWeight(1);
        line(secWidth*_i, graphBottom, secWidth*_i, graphTop);
@@ -89,16 +98,7 @@ class Election {
        textFont(yearFont, 12);
        fill(0);
        text(1952 + (_i-1)*4, secWidth*_i+15, graphTop+15);
-    } else {
-        stroke(115);
-        fill(115);
-        rect(secWidth*_i, graphTop, secWidth, 20);
-        strokeWeight(1);
-        line(secWidth*_i, graphBottom, secWidth*_i, graphTop);    
-        stroke(255, 100);
-        strokeWeight(1);
-        line(secWidth*_i, graphBottom, secWidth*_i, graphBottom - _max);  
-    }
+    } 
   }
   
 }
