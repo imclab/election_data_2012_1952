@@ -30,7 +30,8 @@ PFont yearFont;
 
 int renderYear = 2008;
 String renderCategory = "Catholic";
-int yearFontSize = 50;
+int yearFontLarge = 50;
+int yearFontSmall = 16;
 int nameFontSize = 28;
 int boxHeight = 80;
 int backgroundCol = 190;
@@ -68,15 +69,40 @@ void draw() {
     }
   }  
   noStroke();
-  textFont(yearFont, yearFontSize);  
+  textFont(yearFont, yearFontLarge); 
+// 
+//  fill(25);
+//  rect(0, margin - 20, textWidth("year" + "000"), 20);
+//  textSize(yearFontSmall);
+//  fill(255);
+//  text("SEARCH TERM", 10, 36);
+  
+  // Category Box
+  textSize(yearFontLarge);
   fill(255);
   rect(0, margin, textWidth(renderCategory)*1.25 + margin, boxHeight);
   fill(25);
-  rect(0, boxHeight + margin, textWidth("year" + "000"), boxHeight); // this will be obsolete in the year 10,000
-  text(renderCategory, margin, margin + boxHeight - yearFontSize/2);
-  fill(255);
-  text(renderYear, margin, margin + boxHeight*2 - yearFontSize/2);
+  text("\"" + renderCategory + "\"", margin/2, margin + boxHeight - yearFontLarge/2);
   
+  // Year Box
+  fill(25);
+  rect(0, boxHeight + margin, textWidth("year" + "000"), boxHeight); // this will be obsolete in the year 10,000
+  fill(255);
+  text(renderYear, margin, margin + boxHeight*2 - yearFontLarge/2);
+  
+  // Key
+  fill(#0D3574);
+  rect(secWidth, height - 230, 20, 20);
+  fill(#FF3434);
+  rect(secWidth, height - 200, 20, 20);
+  fill(#F2F0F0);
+  rect(secWidth, height - 170, 20, 20);
+  fill(255);
+  textSize(yearFontSmall);
+  text("Democrat", secWidth + 30, height - 214);
+  text("Republican", secWidth + 30, height - 183);
+  text("Other", secWidth + 30, height - 153);
+ 
   renderGraph(renderCategory);
   
 } 
