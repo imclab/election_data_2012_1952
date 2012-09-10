@@ -92,12 +92,13 @@ class Election {
   void renderFlag(int _i) {
     _i = _i + 1;
     if (mouseX > secWidth*_i - secWidth/2 && mouseX < secWidth*(_i+1) - secWidth/2 && mouseY > graphTop) {
-      if(mousePressed){
-       stroke(25);
-       strokeWeight(3);
-       line(secWidth*_i, height-10, secWidth*_i, graphTop); 
-      } else {
-       stroke(255); 
+      if (mousePressed) {
+        stroke(25);
+        strokeWeight(3);
+        line(secWidth*_i, height-10, secWidth*_i, graphTop);
+      } 
+      else {
+        stroke(255);
       }
       strokeWeight(3);
       fill(255);

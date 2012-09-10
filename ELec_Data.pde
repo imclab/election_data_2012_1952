@@ -34,7 +34,7 @@ int yearFontLarge = 50;
 int yearFontSmall = 16;
 int nameFontSize = 28;
 int boxHeight = 80;
-int backgroundCol = 190;
+int backgroundCol = 200;
 
 boolean displayMenu = false;
 
