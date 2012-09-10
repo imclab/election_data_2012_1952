@@ -28,14 +28,14 @@ float margin;
 PFont nameFont;
 PFont yearFont;
 
-int renderYear = 2000;
-String renderCategory = "Women";
+int renderYear = 2008;
+String renderCategory = "Catholic";
 int yearFontSize = 50;
 int nameFontSize = 28;
 int boxHeight = 80;
+int backgroundCol = 190;
 
-boolean categoryMenu = false;
-boolean yearMenu = false;
+boolean displayMenu = false;
 
 //_________________________________________________setup()______________________________
 void setup() {
@@ -49,7 +49,7 @@ void setup() {
   //checkData();
   
   secWidth = width/(allElections.size()+1);
-  graphTop = height - 150;
+  graphTop = height - 120;
   graphBottom = height - 50;
   graphHeight = graphBottom - graphTop;
   margin = .04 * width;
@@ -58,12 +58,10 @@ void setup() {
 
 //_________________________________________________draw()______________________________
 void draw() {
-  if(categoryMenu == true){
-   displayCategoryMenu(); 
-  } else if(yearMenu == true){
-   displayYearMenu(); 
+  if(displayMenu == true){
+   displayMenu(); 
   } else {
-  background(115);
+  background(backgroundCol);
   for (Election e:allElections) {
     if (e.electionYear == renderYear) {
       e.render(renderCategory);
@@ -71,13 +69,13 @@ void draw() {
   }  
   noStroke();
   textFont(yearFont, yearFontSize);  
-  fill(240);
+  fill(255);
   rect(0, margin, textWidth(renderCategory)*1.25 + margin, boxHeight);
   fill(25);
-  //rect(0, boxHeight, textWidth("year" + "000"), boxHeight); // this will be obsolete in the year 10,000
+  rect(0, boxHeight + margin, textWidth("year" + "000"), boxHeight); // this will be obsolete in the year 10,000
   text(renderCategory, margin, margin + boxHeight - yearFontSize/2);
-  //fill(0);
-  //text(renderYear, textWidth("a"), boxHeight*2 - yearFontSize/2);
+  fill(255);
+  text(renderYear, margin, margin + boxHeight*2 - yearFontSize/2);
   
   renderGraph(renderCategory);
   
@@ -211,10 +209,11 @@ void renderGraph(String _category) {
   // draw flags and marker lines
   for(int i=0; i<allElections.size(); i++){
    Election thisElection = allElections.get(i);
-   int maxValue = int(max(democrats[i], republicans[i]));
-   stroke(255,100);
+   float maxValue = max(democrats[i], republicans[i]);
+   maxValue = map(maxValue, 0, 100, 0, graphHeight);
+   stroke(255);
    strokeWeight(1);
-   line(secWidth*thisElection.index, graphBottom,secWidth*thisElection.index, graphBottom - maxValue);
+   line(secWidth*thisElection.index, graphBottom, secWidth*thisElection.index, graphBottom - maxValue);
    thisElection.renderFlag(i);   
   }
   
@@ -227,7 +226,7 @@ void renderGraph(String _category) {
   for (int i=0; i<democrats.length; i++) {
     float thisValue = map(democrats[i], 0, 100, 0, graphHeight);
     vertex(secWidth*(i+1), graphBottom - thisValue);
-    //ellipse(secWidth*(i+1), graphBottom - thisValue, 3, 3);
+    ellipse(secWidth*(i+1), graphBottom - thisValue, 5, 5);
   }
   endShape();
 
@@ -236,7 +235,7 @@ void renderGraph(String _category) {
   for (int i=0; i<republicans.length; i++) {
     float thisValue = map(republicans[i], 0, 100, 0, graphHeight);
     vertex(secWidth*(i+1), graphBottom - thisValue);
-    //ellipse(secWidth*(i+1), graphBottom - thisValue, 3, 3);
+    ellipse(secWidth*(i+1), graphBottom - thisValue, 5, 5);
   }
   endShape();
   
@@ -244,8 +243,9 @@ void renderGraph(String _category) {
   strokeWeight(5);
   stroke(25);
   line(secWidth, graphBottom, width - secWidth, graphBottom);
-
-  stroke(210); // for others
+  
+  // ellipses for "Other" Candidates
+  stroke(#F2F0F0); 
   strokeWeight(2); 
   for(int i=0; i<others.size(); i++){
    Election thisElection = others.get(i);
@@ -253,6 +253,7 @@ void renderGraph(String _category) {
    for(Category cat:thisCandidate.categories){
     if(cat.title.equals(_category)){
      float thisValue = map(cat.value, 0, 100, 0, graphHeight);
+     fill(#F2F0F0);
      ellipse(width - secWidth*thisElection.index - 8, graphBottom - thisValue, 5, 5);
     } 
    }
@@ -262,64 +263,59 @@ void renderGraph(String _category) {
 //_________________________________________________mouseReleased()______________________________
 void mouseReleased(){
   for(int i=1; i<allElections.size()+1; i++){
-    if(mouseX > secWidth*i - secWidth/2 && mouseX < secWidth*(i+1) - secWidth/2 && mouseY > graphTop){
+    if(mouseX > secWidth*i - secWidth/2 && mouseX < secWidth*(i+1) - secWidth/2 && mouseY > graphTop && displayMenu != true){
       Election thisElection = allElections.get(allElections.size()-i);
       renderYear = thisElection.electionYear;
     }
   }
   
   if(mouseY < 100 && mouseX < renderCategory.length()*60){
-  categoryMenu = !categoryMenu;
+  displayMenu = !displayMenu;
   } 
-  
-  if(mouseY > 100 && mouseY < 200 && mouseX < 250){
-  yearMenu = !yearMenu;
-  }
+
 }
 
 
-//_________________________________________________displayCategoryMenu()______________________________
-void displayCategoryMenu(){ 
- int heightTracker = 0;
+//_________________________________________________displayMenu()______________________________
+void displayMenu(){ 
+ float heightTracker = margin + boxHeight;
  int rowCounter = 0;
+ int boxWidth = 220;
 
  for(int i=2; i<allData.length; i++){
-  float boxX = textWidth(renderCategory)+50 + (rowCounter *200);
-  
+  textSize(50);
+  float boxX = textWidth("year" + "000") + (rowCounter * boxWidth) ;
+  textSize(16);
   String[] thisRow = allData[i].split(",");
   strokeWeight(1);
   
   if(mouseX > boxX && mouseX < boxX + 200 && mouseY > heightTracker && mouseY < heightTracker + 20){
-  fill(255);
-  rect(boxX, heightTracker, 200, 20);
-  fill(0);
-  textFont(yearFont, 12);
-  text(thisRow[0], boxX+5, heightTracker + 15);
+  fill(255);  
+  rect(boxX, heightTracker, boxWidth, 20);
+  fill(0);  
+  text(thisRow[0], boxX+5, heightTracker + 16);
    if(mousePressed){
     renderCategory = thisRow[0];
-    categoryMenu = false; 
+    displayMenu = false; 
    }
   } else {
   fill(0);
-  stroke(255);
-  rect(boxX, heightTracker, 200, 20);
+  rect(boxX, heightTracker, boxWidth, 20);
   fill(255);
-  textFont(yearFont, 12);
-  text(thisRow[0], boxX+5, heightTracker + 15);
+  text(thisRow[0], boxX+5, heightTracker + 16);
   }
   
+  
+
   heightTracker += 20;
   
-  if(heightTracker > height - 40){
-   heightTracker = 0;
+  if(heightTracker > height - 160){
+   heightTracker = margin + boxHeight;
    rowCounter ++; 
   }
  }
 }
 
-void displayYearMenu(){
-  
-}
 
 
 
